@@ -3,7 +3,7 @@ import { Center, Text } from "@gluestack-ui/themed";
 export function HomeScreen() {
   return (
     <Center flex={1}>
-      <Text>Exercise</Text>
+      <Text color="$white">Home</Text>
     </Center>
   )
 }
