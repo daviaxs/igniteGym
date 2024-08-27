@@ -2,6 +2,7 @@ import { VStack, Image, Center, Text, Heading } from '@gluestack-ui/themed'
 import BackgroundImg from '@assets/background.png'
 import Logo from '@assets/logo.svg'
 import { Input } from '@components/input/Input'
+import { Button } from '@components/button/Button'
 
 export function SignInScreen() {
   return (
@@ -37,6 +38,8 @@ export function SignInScreen() {
             placeholder='Password' 
             secureTextEntry
           />
+
+          <Button title="Acessar" />
         </Center>
       </VStack>
     </VStack>
