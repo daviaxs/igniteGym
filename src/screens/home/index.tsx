@@ -18,7 +18,7 @@ export function HomeScreen() {
         keyExtractor={(item) => item}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 32 }}
-        style={{ marginVertical: 40, maxHeight: 44, minHeight: 44, gap: 16 }}
+        style={{ marginVertical: 40, maxHeight: 44, minHeight: 44 }}
         renderItem={({ item }) => (
           <Group
             name={item}
