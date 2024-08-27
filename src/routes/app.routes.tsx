@@ -7,7 +7,7 @@ import { ProfileScreen } from "@screens/profile"
 import HomeSvg from "@assets/home.svg"
 import HistorySvg from "@assets/history.svg"
 import ProfileSvg from "@assets/profile.svg"
-import { gluestackUIConfig } from "@gluestack-ui/config"
+import { gluestackUIConfig } from "../../config/gluestack-ui.config"
 
 type AppRoutesParams = {
   home: undefined
@@ -27,7 +27,9 @@ export function AppRoutes() {
   return (
     <Navigator screenOptions={{
       headerShown: false,
-      tabBarShowLabel: false
+      tabBarShowLabel: false,
+      tabBarActiveTintColor: tokens.colors.green500,
+      tabBarInactiveTintColor: tokens.colors.gray200,
     }}>
       <Screen
         name="home"
