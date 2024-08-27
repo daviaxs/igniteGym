@@ -3,9 +3,13 @@ import { Heading, HStack, Image, VStack } from "@gluestack-ui/themed"
 import { ChevronRight } from "lucide-react-native"
 import { TouchableOpacity, TouchableOpacityProps } from "react-native"
 
-type ExerciseProps = TouchableOpacityProps
+type ExerciseParams = TouchableOpacityProps
 
-export function ExerciseCard({ ...props }: ExerciseProps) {
+interface ExerciseProps extends ExerciseParams {
+  name: string
+}
+
+export function ExerciseCard({ name, ...props }: ExerciseProps) {
   return (
     <TouchableOpacity {...props}>
       <HStack
@@ -30,7 +34,7 @@ export function ExerciseCard({ ...props }: ExerciseProps) {
 
         <VStack flex={1}>
           <Heading fontSize="$lg" color="$white" fontFamily="$heading">
-            Puxada frontal
+            {name}
           </Heading>
           <Text fontSize="$sm" color="$gray200" mt="$1" numberOfLines={2}>
             3 séries x 12 repetições

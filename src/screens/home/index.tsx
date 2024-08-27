@@ -8,6 +8,16 @@ import { FlatList } from "react-native"
 export function HomeScreen() {
   const [groups, setGroups] = useState(['costas', 'bíceps', 'tríceps', 'ombro'])
   const [groupActive, setGroupActive] = useState('costas')
+  const [exercises, setExercises] = useState([
+    'Puxada frontal',
+    'Remada curvada',
+    'Remada unilateral',
+    'Levantamento terra',
+    'Levantamento direta',
+    'Levantamento direta',
+    'Levantamento direta',
+    'Levantamento direta',
+  ])
 
   return (
     <VStack flex={1}>
@@ -30,18 +40,26 @@ export function HomeScreen() {
         )}
       />
 
-      <VStack px="$8">
+      <VStack px="$8" flex={1}>
         <HStack justifyContent="space-between" alignItems="center" marginBottom="$8">
           <Heading color="$gray200" fontFamily="$body">
             Exercícios
           </Heading>
 
           <Text>
-            4
+            {exercises.length}
           </Text>
         </HStack>
 
-        <ExerciseCard />
+        <FlatList
+          data={exercises}
+          keyExtractor={(_, index) => String(index)}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => (
+            <ExerciseCard name={item} />
+          )}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        />
       </VStack>
     </VStack>
   )
