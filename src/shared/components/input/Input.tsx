@@ -17,6 +17,7 @@ export function Input({ ...rest }: InputProps) {
       }}
     >
       <InputField
+        color='$gray100'
         {...rest}
       />
     </GluestackInput>
