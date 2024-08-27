@@ -1,3 +1,4 @@
+import { ExerciseCard } from "@components/exercise-card/ExerciseCard"
 import { Group } from "@components/group/Group"
 import { HomeHeader } from "@components/home-header/HomeHeader"
 import { Heading, HStack, Text, VStack } from "@gluestack-ui/themed"
@@ -30,7 +31,7 @@ export function HomeScreen() {
       />
 
       <VStack px="$8">
-        <HStack justifyContent="space-between" alignItems="center">
+        <HStack justifyContent="space-between" alignItems="center" marginBottom="$8">
           <Heading color="$gray200" fontFamily="$body">
             Exercícios
           </Heading>
@@ -39,6 +40,8 @@ export function HomeScreen() {
             4
           </Text>
         </HStack>
+
+        <ExerciseCard />
       </VStack>
     </VStack>
   )
