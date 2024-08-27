@@ -9,9 +9,9 @@
       "@dtos/*": ["./src/dtos/*"],
       "@services/*": ["./src/services/*"],
       "@assets/*": ["./src/shared/assets/*"],
-      "@components/*": ["./shared/src/components/*"],
+      "@components/*": ["./src/shared/components/*"],
       "@utils/*": ["./src/shared/utils/*"],
-      "@hooks/*": ["./src/shared//hooks/*"],
+      "@hooks/*": ["./src/shared/hooks/*"],
       "@contexts/*": ["./src/shared/contexts/*"],
     }
   }
