@@ -1,8 +1,16 @@
+import { UserPhoto } from "@components/user-photo/UserPhoto";
 import { Heading, HStack, Text, VStack } from "@gluestack-ui/themed";
 
 export function HomeHeader() {
   return (
-    <HStack bg="$gray600" pt="$16" pb="$5" px="$8" alignItems="center">
+    <HStack bg="$gray600" pt="$16" pb="$5" px="$8" alignItems="center" gap="$4">
+      <UserPhoto 
+        source={{uri: "https://github.com/daviaxs.png"}}
+        alt="Imagem do usuário"
+        h="$16"
+        w="$16"
+      />
+
       <VStack>
         <Text color="$gray100" fontSize="$sm">Olá</Text>
 
