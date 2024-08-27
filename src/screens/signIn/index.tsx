@@ -27,8 +27,16 @@ export function SignInScreen() {
         <Center gap="$2">
           <Heading color='$gray100'>Acesse a conta</Heading>
 
-          <Input placeholder='Email' />
-          <Input placeholder='Password' />
+          <Input 
+            placeholder='Email' 
+            keyboardType='email-address'
+            autoCapitalize='none'
+          />
+
+          <Input 
+            placeholder='Password' 
+            secureTextEntry
+          />
         </Center>
       </VStack>
     </VStack>
