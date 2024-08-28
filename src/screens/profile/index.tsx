@@ -4,8 +4,18 @@ import { ScreenHeader } from "@components/screen-header/ScreenHeader"
 import { UserPhoto } from "@components/user-photo/UserPhoto"
 import { Center, Heading, Text, VStack } from "@gluestack-ui/themed"
 import { ScrollView, TouchableOpacity } from "react-native"
+import * as ImagePicker from "expo-image-picker"
 
 export function ProfileScreen() {
+  async function handleUserPhotoSelected() {
+    await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 1,
+      aspect: [4, 4],
+      allowsEditing: true
+    })
+  }
+
   return (
     <VStack>
       <ScreenHeader title="Perfil" />
@@ -18,7 +28,7 @@ export function ProfileScreen() {
             size="xl"
           />
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleUserPhotoSelected}>
             <Text
               fontFamily="$heading"
               fontSize="$md"
