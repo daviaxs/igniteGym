@@ -33,7 +33,7 @@ export function HomeScreen() {
         renderItem={({ item }) => (
           <Group
             name={item}
-            isActive={groupActive === item}
+            isActive={groupActive.toLowerCase() === item.toLowerCase()}
             onPress={() => setGroupActive(item)}
             style={{ marginRight: 16 }}
           />
