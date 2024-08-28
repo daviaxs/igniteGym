@@ -7,6 +7,7 @@ import { Alert, ScrollView, TouchableOpacity } from "react-native"
 import * as ImagePicker from "expo-image-picker"
 import * as FileSystem from "expo-file-system"
 import { useState } from "react"
+import { ToastMessage } from "@components/toast-message/ToastMessage"
 
 export function ProfileScreen() {
   const [userPhoto, setUserPhoto] = useState('https://github.com/daviaxs.png')
@@ -47,6 +48,14 @@ export function ProfileScreen() {
   return (
     <VStack>
       <ScreenHeader title="Perfil" />
+
+      <ToastMessage
+        id="1"
+        title="Mensagem de exemplo"
+        description="asdasdakjsd asdajksdbasjdhasd"
+        action="success"
+        onClose={() => { }}
+      />
 
       <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
         <Center mt="$6" px="$10">
