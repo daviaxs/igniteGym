@@ -24,7 +24,7 @@ export function ToastMessage({
       mt="$10"
     >
       <VStack space="xs" w="$full">
-        <Pressable onPress={onClose} style={{ position: "absolute", right: 0 }}>
+        <Pressable onPress={onClose} style={{ position: "absolute", right: 0, zIndex: 99 }}>
           <Icon as={X} color="$coolGray50" size="xl" />
         </Pressable>
 
