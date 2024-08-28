@@ -1,6 +1,6 @@
 import { ScreenHeader } from "@components/screen-header/ScreenHeader"
 import { UserPhoto } from "@components/user-photo/UserPhoto"
-import { Center, VStack } from "@gluestack-ui/themed"
+import { Center, Text, VStack } from "@gluestack-ui/themed"
 import { ScrollView } from "react-native"
 
 export function ProfileScreen() {
@@ -15,6 +15,16 @@ export function ProfileScreen() {
             alt="Foto de perfil"
             size="xl"
           />
+
+          <Text
+            fontFamily="$heading"
+            fontSize="$md"
+            color="$green500"
+            mt="$2"
+            mb="$8"
+          >
+            Alterar foto
+          </Text>
         </Center>
       </ScrollView>
     </VStack>
