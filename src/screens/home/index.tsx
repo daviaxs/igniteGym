@@ -2,6 +2,8 @@ import { ExerciseCard } from "@components/exercise-card/ExerciseCard"
 import { Group } from "@components/group/Group"
 import { HomeHeader } from "@components/home-header/HomeHeader"
 import { Heading, HStack, Text, VStack } from "@gluestack-ui/themed"
+import { useNavigation } from "@react-navigation/native"
+import { AppNavigatorRoutesProps } from "@routes/app.routes"
 import { useState } from "react"
 import { FlatList } from "react-native"
 
@@ -18,6 +20,12 @@ export function HomeScreen() {
     'Levantamento direta',
     'Levantamento direta',
   ])
+
+  const navigation = useNavigation<AppNavigatorRoutesProps>()
+
+  function handleOpenExerciseDetails() {
+    navigation.navigate("exercise")
+  }
 
   return (
     <VStack flex={1}>
@@ -56,7 +64,7 @@ export function HomeScreen() {
           keyExtractor={(_, index) => String(index)}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <ExerciseCard name={item} />
+            <ExerciseCard name={item} onPress={handleOpenExerciseDetails} />
           )}
           contentContainerStyle={{ paddingBottom: 20 }}
         />
