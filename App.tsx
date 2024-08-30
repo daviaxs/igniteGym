@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar'
 import { Loading } from '@components/loading/Loading'
 import { config } from './config/gluestack-ui.config'
 import { Routes } from '@routes/index'
+import { AuthProvider } from '@contexts/AuthContext'
 
 export default function App() {
   const [fontsLoaded] = useFonts({ Roboto_700Bold, Roboto_400Regular })
@@ -11,11 +12,13 @@ export default function App() {
   return (
     <GluestackUIProvider config={config}>
       <StatusBar style="light" backgroundColor="transparent" translucent />
-      {fontsLoaded ? (
-        <Routes />
-      ) : (
-        <Loading />
-      )}
+      <AuthProvider>
+        {fontsLoaded ? (
+          <Routes />
+        ) : (
+          <Loading />
+        )}
+      </AuthProvider>
     </GluestackUIProvider>
   );
 }
