@@ -63,18 +63,13 @@ export function SignUpScreen() {
                   placeholder='Nome'
                   onChangeText={onChange}
                   value={value}
+                  errorMessage={errors.name?.message}
                 />
               )}
               rules={{
                 required: 'Informe seu nome.'
               }}
             />
-
-            {errors.name?.message && (
-              <Text color="$white">
-                {errors.name?.message}
-              </Text>
-            )}
 
             <Controller
               control={control}
@@ -86,6 +81,7 @@ export function SignUpScreen() {
                   autoCapitalize='none'
                   onChangeText={onChange}
                   value={value}
+                  errorMessage={errors.email?.message}
                 />
               )}
               rules={{
@@ -97,13 +93,6 @@ export function SignUpScreen() {
               }}
             />
 
-            {errors.email?.message && (
-              <Text color="$white">
-                {errors.email?.message}
-              </Text>
-            )}
-
-
             <Controller
               control={control}
               name="password"
@@ -113,18 +102,13 @@ export function SignUpScreen() {
                   secureTextEntry
                   onChangeText={onChange}
                   value={value}
+                  errorMessage={errors.password?.message}
                 />
               )}
               rules={{
                 required: 'Informe sua senha.'
               }}
             />
-
-            {errors.password?.message && (
-              <Text color="$white">
-                {errors.password?.message}
-              </Text>
-            )}
 
             <Controller
               control={control}
@@ -135,18 +119,13 @@ export function SignUpScreen() {
                   secureTextEntry
                   onChangeText={onChange}
                   value={value}
+                  errorMessage={errors.password_confirm?.message}
                 />
               )}
               rules={{
                 required: 'Confirme sua senha.'
               }}
             />
-
-            {errors.password_confirm?.message && (
-              <Text color="$white">
-                {errors.password_confirm?.message}
-              </Text>
-            )}
 
             <Button title="Criar e acessar" onPress={handleSubmit(handleSignUp)} />
           </Center>
