@@ -16,7 +16,7 @@ interface SignUpFormDataProps {
 
 export function SignUpScreen() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
-  const { control, handleSubmit } = useForm<SignUpFormDataProps>()
+  const { control, handleSubmit, formState: { errors } } = useForm<SignUpFormDataProps>()
 
   function handleSignIn() {
     navigation.navigate('sigIn')
@@ -65,7 +65,16 @@ export function SignUpScreen() {
                   value={value}
                 />
               )}
+              rules={{
+                required: 'Informe seu nome.'
+              }}
             />
+
+            {errors.name?.message && (
+              <Text color="$white">
+                {errors.name?.message}
+              </Text>
+            )}
 
             <Controller
               control={control}
@@ -79,7 +88,20 @@ export function SignUpScreen() {
                   value={value}
                 />
               )}
+              rules={{
+                required: 'Informe seu email.',
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: 'Email inválido.'
+                }
+              }}
             />
+
+            {errors.email?.message && (
+              <Text color="$white">
+                {errors.email?.message}
+              </Text>
+            )}
 
 
             <Controller
@@ -93,7 +115,16 @@ export function SignUpScreen() {
                   value={value}
                 />
               )}
+              rules={{
+                required: 'Informe sua senha.'
+              }}
             />
+
+            {errors.password?.message && (
+              <Text color="$white">
+                {errors.password?.message}
+              </Text>
+            )}
 
             <Controller
               control={control}
@@ -106,9 +137,16 @@ export function SignUpScreen() {
                   value={value}
                 />
               )}
+              rules={{
+                required: 'Confirme sua senha.'
+              }}
             />
 
-
+            {errors.password_confirm?.message && (
+              <Text color="$white">
+                {errors.password_confirm?.message}
+              </Text>
+            )}
 
             <Button title="Criar e acessar" onPress={handleSubmit(handleSignUp)} />
           </Center>
