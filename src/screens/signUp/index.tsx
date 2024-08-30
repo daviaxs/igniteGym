@@ -6,6 +6,8 @@ import { Button } from '@components/button/Button'
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
 import { useNavigation } from '@react-navigation/native'
 import { useForm, Controller } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 
 interface SignUpFormDataProps {
   name: string
@@ -14,9 +16,21 @@ interface SignUpFormDataProps {
   password_confirm: string
 }
 
+const signUpFormSchema = yup.object({
+  name: yup.string().required('Informe seu nome.'),
+  email: yup.string().email('Email inválido.').required('Informe seu email.'),
+  password: yup.string().min(6, 'A senha deve ter no mínimo 6 caracteres.').required('Informe sua senha.'),
+  password_confirm:
+    yup.string()
+      .required('Confirme sua senha.')
+      .oneOf([yup.ref('password')], 'As senhas não conferem.'),
+})
+
 export function SignUpScreen() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
-  const { control, handleSubmit, formState: { errors } } = useForm<SignUpFormDataProps>()
+  const { control, handleSubmit, formState: { errors } } = useForm<SignUpFormDataProps>({
+    resolver: yupResolver(signUpFormSchema)
+  })
 
   function handleSignIn() {
     navigation.navigate('sigIn')
