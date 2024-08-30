@@ -112,9 +112,6 @@ export function SignUpScreen() {
                   errorMessage={errors.name?.message}
                 />
               )}
-              rules={{
-                required: 'Informe seu nome.'
-              }}
             />
 
             <Controller
@@ -130,13 +127,6 @@ export function SignUpScreen() {
                   errorMessage={errors.email?.message}
                 />
               )}
-              rules={{
-                required: 'Informe seu email.',
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: 'Email inválido.'
-                }
-              }}
             />
 
             <Controller
@@ -151,9 +141,6 @@ export function SignUpScreen() {
                   errorMessage={errors.password?.message}
                 />
               )}
-              rules={{
-                required: 'Informe sua senha.'
-              }}
             />
 
             <Controller
@@ -168,9 +155,6 @@ export function SignUpScreen() {
                   errorMessage={errors.password_confirm?.message}
                 />
               )}
-              rules={{
-                required: 'Confirme sua senha.'
-              }}
             />
 
             <Button
