@@ -1,8 +1,8 @@
 import { ButtonSpinner, Button as GluestackButton, Text } from "@gluestack-ui/themed"
-import { ComponentProps } from "react"
+import { ComponentProps, ReactNode } from "react"
 
 type ButtonProps = ComponentProps<typeof GluestackButton> & {
-  title: string
+  title: string | ReactNode
   variant?: 'solid' | 'outline'
   isLoading?: boolean
 }

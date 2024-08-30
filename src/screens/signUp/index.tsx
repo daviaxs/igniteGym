@@ -1,4 +1,4 @@
-import { VStack, Image, Center, Text, Heading, ScrollView } from '@gluestack-ui/themed'
+import { VStack, Image, Center, Text, Heading, ScrollView, useToast, Toast, ToastTitle, ToastDescription, Spinner, View } from '@gluestack-ui/themed'
 import BackgroundImg from '@assets/background.png'
 import Logo from '@assets/logo.svg'
 import { Input } from '@components/input/Input'
@@ -8,6 +8,9 @@ import { useNavigation } from '@react-navigation/native'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
+import { appError } from '@utils/appError'
+import { api } from '@services/api'
+import { useState } from 'react'
 
 interface SignUpFormDataProps {
   name: string
@@ -27,17 +30,46 @@ const signUpFormSchema = yup.object({
 })
 
 export function SignUpScreen() {
+  const [isLoading, setIsLoading] = useState(false)
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
-  const { control, handleSubmit, formState: { errors } } = useForm<SignUpFormDataProps>({
+  const { control, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignUpFormDataProps>({
     resolver: yupResolver(signUpFormSchema)
   })
+
+  const toast = useToast()
 
   function handleSignIn() {
     navigation.navigate('sigIn')
   }
 
-  function handleSignUp(data: SignUpFormDataProps) {
-    console.log(data)
+  async function handleSignUp({ name, email, password }: SignUpFormDataProps) {
+    try {
+      setIsLoading(true)
+
+      const response = await api.post('/users', { name, email, password })
+
+      console.log(response)
+    } catch (error) {
+      const isAppError = error instanceof appError
+      const message = isAppError ? error.message : 'Não foi possível criar sua conta. Tente novamente mais tarde.'
+
+      toast.show({
+        placement: "top",
+        render: () => (
+          <Toast
+            action="error"
+            variant="solid"
+            marginHorizontal="$2"
+            bgColor="$red500"
+            mt="$20"
+          >
+            <ToastTitle color="$white">{message}</ToastTitle>
+          </Toast>
+        ),
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -141,7 +173,11 @@ export function SignUpScreen() {
               }}
             />
 
-            <Button title="Criar e acessar" onPress={handleSubmit(handleSignUp)} />
+            <Button
+              title={isLoading ? <Spinner color="$white" /> : "Criar e acessar"}
+              onPress={handleSubmit(handleSignUp)}
+              disabled={isSubmitting}
+            />
           </Center>
 
           <Button title='Voltar para login' variant='outline' mt="$12" onPress={handleSignIn} />
