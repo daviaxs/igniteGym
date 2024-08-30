@@ -1,20 +1,64 @@
-import { VStack, Image, Center, Text, Heading, ScrollView } from '@gluestack-ui/themed'
+import { VStack, Image, Center, Text, Heading, ScrollView, Toast, ToastTitle } from '@gluestack-ui/themed'
 import BackgroundImg from '@assets/background.png'
 import Logo from '@assets/logo.svg'
 import { Input } from '@components/input/Input'
 import { Button } from '@components/button/Button'
 import { useNavigation } from '@react-navigation/native'
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
+import * as yup from 'yup'
+import { useForm, Controller } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { appError } from '@utils/appError'
+import { useToast } from '@gluestack-ui/themed'
+
+interface SignInFormDataProps {
+  email: string
+  password: string
+}
+
+const SignInFormSchema = yup.object({
+  email: yup.string().email('Email inválido.').required('Informe seu email.'),
+  password: yup.string().min(6, 'A senha deve ter no mínimo 6 caracteres.').required('Informe sua senha.'),
+})
 
 export function SignInScreen() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
+  const { control, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignInFormDataProps>({
+    resolver: yupResolver(SignInFormSchema)
+  })
+
+  const toast = useToast()
 
   function handleNewAccount() {
     navigation.navigate('signUp')
   }
 
+  function handleSignIn({ email, password }: SignInFormDataProps) {
+    try {
+      console.log(email, password)
+    } catch (error) {
+      const isAppError = error instanceof appError
+      const message = isAppError ? error.message : 'Não foi possível acessar sua conta. Tente novamente mais tarde.'
+
+      toast.show({
+        placement: "top",
+        render: () => (
+          <Toast
+            action="error"
+            variant="solid"
+            marginHorizontal="$2"
+            bgColor="$red500"
+            mt="$20"
+          >
+            <ToastTitle color="$white">{message}</ToastTitle>
+          </Toast>
+        )
+      })
+    }
+  }
+
   return (
-    <ScrollView 
+    <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
       showsVerticalScrollIndicator={false}
     >
@@ -40,18 +84,40 @@ export function SignInScreen() {
           <Center gap="$2">
             <Heading color='$gray100'>Acesse a conta</Heading>
 
-            <Input
-              placeholder='Email'
-              keyboardType='email-address'
-              autoCapitalize='none'
+            <Controller
+              control={control}
+              name="email"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  placeholder='Email'
+                  keyboardType='email-address'
+                  autoCapitalize='none'
+                  onChangeText={onChange}
+                  value={value}
+                  errorMessage={errors.email?.message}
+                />
+              )}
             />
 
-            <Input
-              placeholder='Password'
-              secureTextEntry
+            <Controller
+              control={control}
+              name="password"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  placeholder='Password'
+                  secureTextEntry
+                  onChangeText={onChange}
+                  value={value}
+                  errorMessage={errors.password?.message}
+                />
+              )}
             />
 
-            <Button title="Acessar" />
+            <Button
+              title="Acessar"
+              onPress={handleSubmit(handleSignIn)}
+              disabled={isSubmitting}
+            />
           </Center>
 
           <Center flex={1} justifyContent='flex-end' marginTop="$10">
