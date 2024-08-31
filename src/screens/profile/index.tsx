@@ -15,9 +15,9 @@ import { Controller, useForm } from "react-hook-form"
 interface FormDataProps {
   name: string
   email: string
-  oldPassword: string
-  newPassword: string
-  confirmNewPassword: string
+  old_password: string
+  password: string
+  confirmPassword: string
 }
 
 export function ProfileScreen() {
