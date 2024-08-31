@@ -17,8 +17,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { data } = await api.post('/sessions', { email, password })
 
-      console.log(data)
-
       if (data.user) {
         setUser(data.user)
         storageUserSave(data.user)

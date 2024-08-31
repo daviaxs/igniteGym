@@ -47,8 +47,6 @@ export function SignUpScreen() {
       setIsLoading(true)
 
       const response = await api.post('/users', { name, email, password })
-
-      console.log(response)
     } catch (error) {
       const isAppError = error instanceof appError
       const message = isAppError ? error.message : 'Não foi possível criar sua conta. Tente novamente mais tarde.'
