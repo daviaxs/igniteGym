@@ -5,7 +5,7 @@ import { Loading } from "@components/loading/Loading"
 import { Skeleton } from "@components/skeleton/Skeleton"
 import { ToastAlert } from "@components/toast-alert/ToastAlert"
 import { exerciseDTO } from "@dtos/exerciseDTO"
-import { Heading, HStack, Text, useToast, View, VStack } from "@gluestack-ui/themed"
+import { Heading, HStack, ScrollView, Text, useToast, View, VStack } from "@gluestack-ui/themed"
 import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 import { api } from "@services/api"
@@ -106,11 +106,11 @@ export function HomeScreen() {
             </HStack>
 
             {isExercisesLoading ? (
-              <VStack gap="$4">
+              <ScrollView showsVerticalScrollIndicator={false}>
                 {skeletonArray.map((index) => (
-                  <Skeleton key={index} />
+                  <Skeleton key={index} mb="$4" />
                 ))}
-              </VStack>
+              </ScrollView>
             ) : (
               <FlatList
                 data={exercises}
