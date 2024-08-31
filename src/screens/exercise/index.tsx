@@ -21,6 +21,7 @@ interface ExerciseRouteParams {
 export function ExerciseScreen() {
   const [exercise, setExercise] = useState<exerciseDTO>()
   const [isLoading, setIsLoading] = useState(true)
+  const [sendingRegister, setSendingRegister] = useState(false)
 
   const navigation = useNavigation<AppNavigatorRoutesProps>()
   const route = useRoute()
@@ -46,6 +47,25 @@ export function ExerciseScreen() {
       ToastAlert({ message, toast })
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  async function handleExerciseHistoryRegister() {
+    try {
+      setSendingRegister(true)
+
+      await api.post('/history', { exercise_id: exerciseId })
+
+      ToastAlert({ message: 'Parabéns! Exercício registrado no seu histórico', toast })
+
+      navigation.navigate('history')
+    } catch (error) {
+      const isAppError = error instanceof appError
+      const message = isAppError ? error.message : 'Não foi possível registrar o exercício.'
+
+      ToastAlert({ message, toast })
+    } finally {
+      setSendingRegister(false)
     }
   }
 
@@ -131,7 +151,11 @@ export function ExerciseScreen() {
                 </HStack>
               </HStack>
 
-              <Button title="Marcar como realizado" />
+              <Button
+                title="Marcar como realizado"
+                onPress={handleExerciseHistoryRegister}
+                isLoading={sendingRegister}
+              />
             </Box>
           </VStack>
         </ScrollView>
