@@ -1,4 +1,4 @@
-import { VStack, Image, Center, Text, Heading, ScrollView, Toast, ToastTitle } from '@gluestack-ui/themed'
+import { VStack, Image, Center, Text, Heading, ScrollView, Toast, ToastTitle, Spinner } from '@gluestack-ui/themed'
 import BackgroundImg from '@assets/background.png'
 import Logo from '@assets/logo.svg'
 import { Input } from '@components/input/Input'
@@ -116,7 +116,7 @@ export function SignInScreen() {
             />
 
             <Button
-              title="Acessar"
+              title={isSubmitting ? <Spinner color="$white" /> : "Acessar"}
               onPress={handleSubmit(handleSignIn)}
               disabled={isSubmitting}
             />
