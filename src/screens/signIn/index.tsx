@@ -10,6 +10,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { appError } from '@utils/appError'
 import { useToast } from '@gluestack-ui/themed'
+import { useAuth } from '@hooks/useAuth'
 
 interface SignInFormDataProps {
   email: string
@@ -26,6 +27,7 @@ export function SignInScreen() {
   const { control, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignInFormDataProps>({
     resolver: yupResolver(SignInFormSchema)
   })
+  const { signIn } = useAuth()
 
   const toast = useToast()
 
@@ -33,9 +35,9 @@ export function SignInScreen() {
     navigation.navigate('signUp')
   }
 
-  function handleSignIn({ email, password }: SignInFormDataProps) {
+  async function handleSignIn({ email, password }: SignInFormDataProps) {
     try {
-      console.log(email, password)
+      await signIn(email, password)
     } catch (error) {
       const isAppError = error instanceof appError
       const message = isAppError ? error.message : 'Não foi possível acessar sua conta. Tente novamente mais tarde.'
