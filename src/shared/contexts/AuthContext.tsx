@@ -1,6 +1,6 @@
 import { userDTO } from "@dtos/userDTO"
 import { api } from "@services/api"
-import { storageAuthTokenSave } from "@storage/storageAuthToken"
+import { storageAuthTokenGet, storageAuthTokenRemove, storageAuthTokenSave } from "@storage/storageAuthToken"
 import { storageUserGet, storageUserRemove, storageUserSave } from "@storage/storageUser"
 import { createContext, ReactNode, useEffect, useState } from "react"
 
@@ -17,16 +17,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<userDTO>({} as userDTO)
   const [isLoadingUserData, setIsLoadingUserData] = useState(true)
 
-  async function storageUserAndToken(userData: userDTO, token: string) {
+  async function userAndTokenUpdate(userData: userDTO, token: string) {
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+
+    setUser(userData)
+  }
+
+  async function storageUserAndTokenSave(userData: userDTO, token: string) {
     try {
       setIsLoadingUserData(true)
 
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`
-
       await storageUserSave(userData)
       await storageAuthTokenSave(token)
-
-      setUser(userData)
     } catch (error) {
       throw error
     } finally {
@@ -39,19 +41,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { data } = await api.post('/sessions', { email, password })
 
       if (data.user && data.token) {
-        storageUserAndToken(data.user, data.token)
+        await storageUserAndTokenSave(data.user, data.token)
+        await userAndTokenUpdate(data.user, data.token)
       }
     } catch (error) {
       throw error
     }
   }
 
-  async function loadUser() {
+  async function loadUserData() {
     try {
-      const user = await storageUserGet()
+      setIsLoadingUserData(true)
 
-      if (user) {
-        setUser(user)
+      const userLogged = await storageUserGet()
+      const token = await storageAuthTokenGet()
+
+      if (userLogged && token) {
+        await userAndTokenUpdate(userLogged, token)
       }
     } catch (error) {
       throw error
@@ -63,9 +69,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function signOut() {
     try {
       setIsLoadingUserData(true)
-
       setUser({} as userDTO)
+
       await storageUserRemove()
+      await storageAuthTokenRemove()
     } catch (error) {
       throw error
     } finally {
@@ -74,7 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    loadUser()
+    loadUserData()
   }, [])
 
   return (
