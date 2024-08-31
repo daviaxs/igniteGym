@@ -116,7 +116,7 @@ export function ProfileScreen() {
               name="email"
               render={({ field: { value, onChange } }) => (
                 <Input
-                  bg="$gray600" 
+                  bg="$gray600"
                   placeholder="E-mail"
                   onChangeText={onChange}
                   value={value}
@@ -138,9 +138,48 @@ export function ProfileScreen() {
           </Heading>
 
           <Center w="$full" gap="$4">
-            <Input placeholder="Senha antiga" bg="$gray600" secureTextEntry />
-            <Input placeholder="Nova senha" bg="$gray600" secureTextEntry />
-            <Input placeholder="Confirme a nova senha" bg="$gray600" secureTextEntry />
+
+            <Controller
+              control={control}
+              name="old_password"
+              render={({ field: { value, onChange } }) => (
+                <Input
+                  placeholder="Senha antiga"
+                  bg="$gray600"
+                  secureTextEntry
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="password"
+              render={({ field: { value, onChange } }) => (
+                <Input
+                  placeholder="Nova senha"
+                  bg="$gray600"
+                  secureTextEntry
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="confirmPassword"
+              render={({ field: { value, onChange } }) => (
+                <Input
+                  placeholder="Confirme a nova senha"
+                  bg="$gray600"
+                  secureTextEntry
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+            />
 
             <Button title="Salvar" />
           </Center>
