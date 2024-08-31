@@ -1,20 +1,40 @@
 import { ScreenHeader } from "@components/screen-header/ScreenHeader"
-import { Heading, Text, VStack } from "@gluestack-ui/themed"
+import { Heading, Text, useToast, VStack } from "@gluestack-ui/themed"
 import { HistoryCard } from "./components/HistoryCard"
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { SectionList } from "react-native"
+import { appError } from "@utils/appError"
+import { ToastAlert } from "@components/toast-alert/ToastAlert"
+import { api } from "@services/api"
+import { historyByDayDTO } from "@dtos/historyByDayDTO"
+import { useFocusEffect } from "@react-navigation/native"
 
 export function HistoryScreen() {
-  const [exercises, setExercises] = useState([
-    {
-      title: '22.07.24',
-      data: ['Puxada frontal', 'Remada unilateral'],
-    },
-    {
-      title: '23.07.24',
-      data: ['Puxada frontal'],
+  const [isLoading, setIsLoading] = useState(true)
+  const [exercises, setExercises] = useState<historyByDayDTO[]>([])
+
+  const toast = useToast()
+
+  async function fetchHistory() {
+    try {
+      setIsLoading(true)
+
+      const response = await api.get('/history')
+
+      setExercises(response.data)
+    } catch (error) {
+      const isAppError = error instanceof appError
+      const message = isAppError ? error.message : 'Não foi possível carregar o histórico.'
+
+      ToastAlert({ message, toast })
+    } finally {
+      setIsLoading(false)
     }
-  ])
+  }
+
+  useFocusEffect(useCallback(() => {
+    fetchHistory()
+  }, []))
 
   return (
     <VStack flex={1}>
@@ -23,8 +43,8 @@ export function HistoryScreen() {
 
       <SectionList
         sections={exercises}
-        keyExtractor={(item) => item}
-        renderItem={({ item }) => <HistoryCard />}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => <HistoryCard data={item} />}
         renderSectionHeader={({ section }) => (
           <Heading color="$gray200" fontSize="$md" mt="$10" mb="$3">
             {section.title}
