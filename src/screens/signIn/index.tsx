@@ -118,7 +118,7 @@ export function SignInScreen() {
             <Button
               title={isSubmitting ? <Spinner color="$white" /> : "Acessar"}
               onPress={handleSubmit(handleSignIn)}
-              disabled={isSubmitting}
+              isLoading={isSubmitting}
             />
           </Center>
 
