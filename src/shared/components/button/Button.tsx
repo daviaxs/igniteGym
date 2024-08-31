@@ -18,7 +18,7 @@ export function Button({
       w="$full"
       h="$14"
 
-      bg={variant === "outline" ? "$transparent" : "$green700"}
+      bg={variant === "outline" ? "$transparent" : isLoading ? "$gray500" : "$green500"}
       $active-bg={variant === "outline" ? "$gray500" : "$green500"}
 
       borderWidth={variant === "outline" ? "$1" : "$0"}
@@ -29,7 +29,7 @@ export function Button({
       {...props}
     >
       {isLoading ? (
-        <ButtonSpinner color="$white" />
+        <ButtonSpinner color={variant === "outline" ? "$green500" : "$white"} />
       ) : (
         <Text 
           color={variant === "outline" ? "$green500" : "$white"} 
