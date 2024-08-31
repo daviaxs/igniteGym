@@ -12,6 +12,7 @@ import { useEffect, useState } from "react"
 import { appError } from "@utils/appError"
 import { ToastAlert } from "@components/toast-alert/ToastAlert"
 import { api } from "@services/api"
+import { Loading } from "@components/loading/Loading"
 
 interface ExerciseRouteParams {
   exerciseId: string
@@ -19,6 +20,7 @@ interface ExerciseRouteParams {
 
 export function ExerciseScreen() {
   const [exercise, setExercise] = useState<exerciseDTO>()
+  const [isLoading, setIsLoading] = useState(true)
 
   const navigation = useNavigation<AppNavigatorRoutesProps>()
   const route = useRoute()
@@ -32,6 +34,8 @@ export function ExerciseScreen() {
 
   async function fetchExerciseDetails() {
     try {
+      setIsLoading(true)
+
       const response = await api.get(`/exercises/${exerciseId}`)
 
       setExercise(response.data)
@@ -40,6 +44,8 @@ export function ExerciseScreen() {
       const message = isAppError ? error.message : 'Não foi possível carregar os detalhes do exercício.'
 
       ToastAlert({ message, toast })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -65,7 +71,7 @@ export function ExerciseScreen() {
             fontSize="$lg"
             flexShrink={1}
           >
-            {exercise?.name}
+            {isLoading ? 'Carregando...' : exercise?.name}
           </Heading>
 
           <HStack alignItems="center">
@@ -76,56 +82,60 @@ export function ExerciseScreen() {
               ml="$1"
               textTransform="capitalize"
             >
-              {exercise?.group}
+              {isLoading ? 'Carregando...' : exercise?.group}
             </Text>
           </HStack>
         </HStack>
       </VStack>
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 32 }}
-      >
-        <VStack p="$8">
-          <Image
-            source={{
-              uri: `${api.defaults.baseURL}/exercise/demo/${exercise?.demo}`,
-            }}
-            alt="Nome do exercício"
-            mb="$3"
-            resizeMode="cover"
-            rounded="$lg"
-            w="$full"
-            h="$80"
-          />
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 32 }}
+        >
+          <VStack p="$8">
+            <Image
+              source={{
+                uri: `${api.defaults.baseURL}/exercise/demo/${exercise?.demo}`,
+              }}
+              alt="Nome do exercício"
+              mb="$3"
+              resizeMode="cover"
+              rounded="$lg"
+              w="$full"
+              h="$80"
+            />
 
-          <Box bg="$gray600" rounded="$md" pb="$4" px="$4">
-            <HStack
-              alignItems="center"
-              justifyContent="space-around"
-              marginVertical="$5"
-            >
-              <HStack>
-                <SeriesSvg />
+            <Box bg="$gray600" rounded="$md" pb="$4" px="$4">
+              <HStack
+                alignItems="center"
+                justifyContent="space-around"
+                marginVertical="$5"
+              >
+                <HStack>
+                  <SeriesSvg />
 
-                <Text color="$gray200" ml="$2">
-                  {exercise?.series} séries
-                </Text>
+                  <Text color="$gray200" ml="$2">
+                    {exercise?.series} séries
+                  </Text>
+                </HStack>
+
+                <HStack>
+                  <RepetitionsSvg />
+
+                  <Text color="$gray200" ml="$2">
+                    {exercise?.repetitions} repetições
+                  </Text>
+                </HStack>
               </HStack>
 
-              <HStack>
-                <RepetitionsSvg />
-
-                <Text color="$gray200" ml="$2">
-                  {exercise?.repetitions} repetições
-                </Text>
-              </HStack>
-            </HStack>
-
-            <Button title="Marcar como realizado" />
-          </Box>
-        </VStack>
-      </ScrollView>
+              <Button title="Marcar como realizado" />
+            </Box>
+          </VStack>
+        </ScrollView>
+      )}
     </VStack>
   )
 }
