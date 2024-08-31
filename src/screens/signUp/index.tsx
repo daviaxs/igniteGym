@@ -11,6 +11,7 @@ import * as yup from 'yup'
 import { appError } from '@utils/appError'
 import { api } from '@services/api'
 import { useState } from 'react'
+import { useAuth } from '@hooks/useAuth'
 
 interface SignUpFormDataProps {
   name: string
@@ -30,6 +31,8 @@ const signUpFormSchema = yup.object({
 })
 
 export function SignUpScreen() {
+  const { signIn } = useAuth()
+
   const [isLoading, setIsLoading] = useState(false)
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
   const { control, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignUpFormDataProps>({
@@ -46,8 +49,12 @@ export function SignUpScreen() {
     try {
       setIsLoading(true)
 
-      const response = await api.post('/users', { name, email, password })
+      await api.post('/users', { name, email, password })
+
+      await signIn(email, password)
     } catch (error) {
+      setIsLoading(false)
+
       const isAppError = error instanceof appError
       const message = isAppError ? error.message : 'Não foi possível criar sua conta. Tente novamente mais tarde.'
 
@@ -158,7 +165,7 @@ export function SignUpScreen() {
             <Button
               title={isLoading ? <Spinner color="$white" /> : "Criar e acessar"}
               onPress={handleSubmit(handleSignUp)}
-              disabled={isSubmitting}
+              isLoading={isSubmitting || isLoading}
             />
           </Center>
 
