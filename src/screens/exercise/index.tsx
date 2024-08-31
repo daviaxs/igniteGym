@@ -1,5 +1,5 @@
-import { Box, Heading, HStack, Icon, Image, Text, VStack } from "@gluestack-ui/themed"
-import { useNavigation } from "@react-navigation/native"
+import { Box, Heading, HStack, Icon, Image, Text, useToast, VStack } from "@gluestack-ui/themed"
+import { useNavigation, useRoute } from "@react-navigation/native"
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 import { ArrowLeft } from "lucide-react-native"
 import { ScrollView, TouchableOpacity } from "react-native"
@@ -7,13 +7,45 @@ import BodySvg from "@assets/body.svg"
 import SeriesSvg from '@assets/series.svg'
 import RepetitionsSvg from '@assets/repetitions.svg'
 import { Button } from "@components/button/Button"
+import { exerciseDTO } from "@dtos/exerciseDTO"
+import { useEffect, useState } from "react"
+import { appError } from "@utils/appError"
+import { ToastAlert } from "@components/toast-alert/ToastAlert"
+import { api } from "@services/api"
+
+interface ExerciseRouteParams {
+  exerciseId: string
+}
 
 export function ExerciseScreen() {
+  const [exercise, setExercise] = useState<exerciseDTO>()
+
   const navigation = useNavigation<AppNavigatorRoutesProps>()
+  const route = useRoute()
+  const toast = useToast()
+
+  const { exerciseId } = route.params as ExerciseRouteParams
 
   function handleGoBack() {
     navigation.goBack()
   }
+
+  async function fetchExerciseDetails() {
+    try {
+      const response = await api.get(`/exercises/${exerciseId}`)
+
+      setExercise(response.data)
+    } catch (error) {
+      const isAppError = error instanceof appError
+      const message = isAppError ? error.message : 'Não foi possível carregar os detalhes do exercício.'
+
+      ToastAlert({ message, toast })
+    }
+  }
+
+  useEffect(() => {
+    fetchExerciseDetails()
+  }, [exerciseId])
 
   return (
     <VStack flex={1}>
@@ -33,7 +65,7 @@ export function ExerciseScreen() {
             fontSize="$lg"
             flexShrink={1}
           >
-            Puxada frontal
+            {exercise?.name}
           </Heading>
 
           <HStack alignItems="center">
@@ -44,7 +76,7 @@ export function ExerciseScreen() {
               ml="$1"
               textTransform="capitalize"
             >
-              Costas
+              {exercise?.group}
             </Text>
           </HStack>
         </HStack>
@@ -57,9 +89,9 @@ export function ExerciseScreen() {
         <VStack p="$8">
           <Image
             source={{
-              uri: 'https://static.wixstatic.com/media/2edbed_60c206e178ad4eb3801f4f47fc6523df~mv2.webp/v1/fill/w_350,h_375,al_c/2edbed_60c206e178ad4eb3801f4f47fc6523df~mv2.webp',
+              uri: `${api.defaults.baseURL}/exercise/demo/${exercise?.demo}`,
             }}
-            alt="Exercício"
+            alt="Nome do exercício"
             mb="$3"
             resizeMode="cover"
             rounded="$lg"
@@ -77,15 +109,15 @@ export function ExerciseScreen() {
                 <SeriesSvg />
 
                 <Text color="$gray200" ml="$2">
-                  3 séries
+                  {exercise?.series} séries
                 </Text>
               </HStack>
 
               <HStack>
                 <RepetitionsSvg />
-                
+
                 <Text color="$gray200" ml="$2">
-                  12 repetições
+                  {exercise?.repetitions} repetições
                 </Text>
               </HStack>
             </HStack>
