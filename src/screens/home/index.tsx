@@ -2,6 +2,7 @@ import { ExerciseCard } from "@components/exercise-card/ExerciseCard"
 import { Group } from "@components/group/Group"
 import { HomeHeader } from "@components/home-header/HomeHeader"
 import { Loading } from "@components/loading/Loading"
+import { Skeleton } from "@components/skeleton/Skeleton"
 import { ToastAlert } from "@components/toast-alert/ToastAlert"
 import { exerciseDTO } from "@dtos/exerciseDTO"
 import { Heading, HStack, Text, useToast, View, VStack } from "@gluestack-ui/themed"
@@ -12,8 +13,11 @@ import { appError } from "@utils/appError"
 import { useCallback, useEffect, useState } from "react"
 import { FlatList } from "react-native"
 
+const skeletonArray = Array.from({ length: 10 }).map((_, index) => index)
+
 export function HomeScreen() {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isExercisesLoading, setIsExercisesLoading] = useState(true)
   const [groups, setGroups] = useState<string[]>([])
   const [groupActive, setGroupActive] = useState('costas')
   const [exercises, setExercises] = useState<exerciseDTO[]>([])
@@ -43,6 +47,8 @@ export function HomeScreen() {
 
   async function fetchExercisesByGroup() {
     try {
+      setIsExercisesLoading(true)
+
       const response = await api.get(`/exercises/bygroup/${groupActive}`)
       setExercises(response.data)
     } catch (error) {
@@ -50,6 +56,8 @@ export function HomeScreen() {
       const message = isAppError ? error.message : 'Não foi possível carregar os exercícios.'
 
       ToastAlert({ message, toast })
+    } finally {
+      setIsExercisesLoading(false)
     }
   }
 
@@ -97,20 +105,28 @@ export function HomeScreen() {
               </Text>
             </HStack>
 
-            <FlatList
-              data={exercises}
-              keyExtractor={(item) => item.id}
-              showsVerticalScrollIndicator={false}
-              renderItem={({ item }) => (
-                <ExerciseCard data={item} onPress={handleOpenExerciseDetails} />
-              )}
-              ListEmptyComponent={
-                <View alignItems="center">
-                  <Text>Nenhum exercício encontrado</Text>
-                </View>
-              }
-              contentContainerStyle={{ paddingBottom: 20 }}
-            />
+            {isExercisesLoading ? (
+              <VStack gap="$4">
+                {skeletonArray.map((index) => (
+                  <Skeleton key={index} />
+                ))}
+              </VStack>
+            ) : (
+              <FlatList
+                data={exercises}
+                keyExtractor={(item) => item.id}
+                showsVerticalScrollIndicator={false}
+                renderItem={({ item }) => (
+                  <ExerciseCard data={item} onPress={handleOpenExerciseDetails} />
+                )}
+                ListEmptyComponent={
+                  <View alignItems="center">
+                    <Text>Nenhum exercício encontrado</Text>
+                  </View>
+                }
+                contentContainerStyle={{ paddingBottom: 20 }}
+              />
+            )}
           </VStack>
         </>
       )
