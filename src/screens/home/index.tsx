@@ -21,6 +21,7 @@ export function HomeScreen() {
   const [groups, setGroups] = useState<string[]>([])
   const [groupActive, setGroupActive] = useState('costas')
   const [exercises, setExercises] = useState<exerciseDTO[]>([])
+  const [firstLoad, setFirstLoad] = useState(true)
 
   const toast = useToast()
 
@@ -58,6 +59,7 @@ export function HomeScreen() {
       ToastAlert({ message, toast })
     } finally {
       setIsExercisesLoading(false)
+      setFirstLoad(false)
     }
   }
 
@@ -66,8 +68,14 @@ export function HomeScreen() {
   }, [])
 
   useFocusEffect(useCallback(() => {
+    if (firstLoad) {
+      fetchExercisesByGroup()
+    }
+  }, [firstLoad]))
+
+  useEffect(() => {
     fetchExercisesByGroup()
-  }, [groupActive]))
+  }, [groupActive])
 
   return (
     <VStack flex={1}>
@@ -129,8 +137,7 @@ export function HomeScreen() {
             )}
           </VStack>
         </>
-      )
-      }
+      )}
     </VStack >
   )
 }
