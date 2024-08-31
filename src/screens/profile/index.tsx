@@ -8,6 +8,7 @@ import * as ImagePicker from "expo-image-picker"
 import * as FileSystem from "expo-file-system"
 import { useState } from "react"
 import { ToastMessage } from "@components/toast-message/ToastMessage"
+import { UserAvatar } from "@components/user-avatar/UserAvatar"
 
 export function ProfileScreen() {
   const [userPhoto, setUserPhoto] = useState('https://github.com/daviaxs.png')
@@ -61,15 +62,9 @@ export function ProfileScreen() {
     <VStack>
       <ScreenHeader title="Perfil" />
 
-
-
       <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
         <Center mt="$6" px="$10">
-          <UserPhoto
-            source={{ uri: userPhoto }}
-            alt="Foto de perfil"
-            size="xl"
-          />
+          <UserAvatar h="$32" w="$32" avatar={userPhoto} />
 
           <TouchableOpacity onPress={handleUserPhotoSelected}>
             <Text
