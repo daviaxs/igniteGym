@@ -11,6 +11,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { appError } from '@utils/appError'
 import { useToast } from '@gluestack-ui/themed'
 import { useAuth } from '@hooks/useAuth'
+import { ToastAlert } from '@components/toast-alert/ToastAlert'
 
 interface SignInFormDataProps {
   email: string
@@ -42,20 +43,7 @@ export function SignInScreen() {
       const isAppError = error instanceof appError
       const message = isAppError ? error.message : 'Não foi possível acessar sua conta. Tente novamente mais tarde.'
 
-      toast.show({
-        placement: "top",
-        render: () => (
-          <Toast
-            action="error"
-            variant="solid"
-            marginHorizontal="$2"
-            bgColor="$red500"
-            mt="$20"
-          >
-            <ToastTitle color="$white">{message}</ToastTitle>
-          </Toast>
-        )
-      })
+      ToastAlert({ message, toast })
     }
   }
 

@@ -12,6 +12,7 @@ import { appError } from '@utils/appError'
 import { api } from '@services/api'
 import { useState } from 'react'
 import { useAuth } from '@hooks/useAuth'
+import { ToastAlert } from '@components/toast-alert/ToastAlert'
 
 interface SignUpFormDataProps {
   name: string
@@ -58,20 +59,7 @@ export function SignUpScreen() {
       const isAppError = error instanceof appError
       const message = isAppError ? error.message : 'Não foi possível criar sua conta. Tente novamente mais tarde.'
 
-      toast.show({
-        placement: "top",
-        render: () => (
-          <Toast
-            action="error"
-            variant="solid"
-            marginHorizontal="$2"
-            bgColor="$red500"
-            mt="$20"
-          >
-            <ToastTitle color="$white">{message}</ToastTitle>
-          </Toast>
-        ),
-      })
+      ToastAlert({ message, toast })
     } finally {
       setIsLoading(false)
     }
