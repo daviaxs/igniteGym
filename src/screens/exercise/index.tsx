@@ -56,7 +56,7 @@ export function ExerciseScreen() {
 
       await api.post('/history', { exercise_id: exerciseId })
 
-      ToastAlert({ message: 'Parabéns! Exercício registrado no seu histórico', toast })
+      ToastAlert({ message: 'Parabéns! Exercício registrado no seu histórico', toast, variant: 'success' })
 
       navigation.navigate('history')
     } catch (error) {
