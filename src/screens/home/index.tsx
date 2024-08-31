@@ -26,8 +26,8 @@ export function HomeScreen() {
 
   const navigation = useNavigation<AppNavigatorRoutesProps>()
 
-  function handleOpenExerciseDetails() {
-    navigation.navigate("exercise")
+  function handleOpenExerciseDetails(exerciseId: string) {
+    navigation.navigate("exercise", { exerciseId })
   }
 
   async function fetchGroups() {
@@ -117,7 +117,7 @@ export function HomeScreen() {
                 keyExtractor={(item) => item.id}
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => (
-                  <ExerciseCard data={item} onPress={handleOpenExerciseDetails} />
+                  <ExerciseCard data={item} onPress={() => handleOpenExerciseDetails(item.id)} />
                 )}
                 ListEmptyComponent={
                   <View alignItems="center">
