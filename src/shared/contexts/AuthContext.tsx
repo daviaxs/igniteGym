@@ -6,12 +6,14 @@ import { createContext, ReactNode, useEffect, useState } from "react"
 interface AuthContextProps {
   user: userDTO
   signIn: (email: string, password: string) => Promise<void>
+  isLoadingUserData: boolean
 }
 
 export const AuthContext = createContext<AuthContextProps>({} as AuthContextProps)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<userDTO>({} as userDTO)
+  const [isLoadingUserData, setIsLoadingUserData] = useState(true)
 
   async function signIn(email: string, password: string) {
     try {
@@ -27,10 +29,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function loadUser() {
-    const user = await storageUserGet()
+    try {
+      const user = await storageUserGet()
 
-    if (user) {
-      setUser(user)
+      if (user) {
+        setUser(user)
+      }
+    } catch (error) {
+      throw error
+    } finally {
+      setIsLoadingUserData(false)
     }
   }
 
@@ -40,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, signIn }}
+      value={{ user, signIn, isLoadingUserData }}
     >
       {children}
     </AuthContext.Provider >
