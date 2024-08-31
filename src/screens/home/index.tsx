@@ -3,7 +3,7 @@ import { Group } from "@components/group/Group"
 import { HomeHeader } from "@components/home-header/HomeHeader"
 import { Loading } from "@components/loading/Loading"
 import { ToastAlert } from "@components/toast-alert/ToastAlert"
-import { Heading, HStack, Text, useToast, VStack } from "@gluestack-ui/themed"
+import { Heading, HStack, Text, useToast, View, VStack } from "@gluestack-ui/themed"
 import { useNavigation } from "@react-navigation/native"
 import { AppNavigatorRoutesProps } from "@routes/app.routes"
 import { api } from "@services/api"
@@ -87,6 +87,11 @@ export function HomeScreen() {
               renderItem={({ item }) => (
                 <ExerciseCard name={item} onPress={handleOpenExerciseDetails} />
               )}
+              ListEmptyComponent={
+                <View alignItems="center">
+                  <Text>Nenhum exercício encontrado</Text>
+                </View>
+              }
               contentContainerStyle={{ paddingBottom: 20 }}
             />
           </VStack>
