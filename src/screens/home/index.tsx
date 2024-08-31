@@ -19,7 +19,7 @@ export function HomeScreen() {
   const [isLoading, setIsLoading] = useState(true)
   const [isExercisesLoading, setIsExercisesLoading] = useState(true)
   const [groups, setGroups] = useState<string[]>([])
-  const [groupActive, setGroupActive] = useState('costas')
+  const [groupActive, setGroupActive] = useState('antebraço')
   const [exercises, setExercises] = useState<exerciseDTO[]>([])
   const [firstLoad, setFirstLoad] = useState(true)
 
