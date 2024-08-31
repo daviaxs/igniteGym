@@ -9,10 +9,29 @@ import * as FileSystem from "expo-file-system"
 import { useState } from "react"
 import { ToastMessage } from "@components/toast-message/ToastMessage"
 import { UserAvatar } from "@components/user-avatar/UserAvatar"
+import { useAuth } from "@hooks/useAuth"
+import { Controller, useForm } from "react-hook-form"
+
+interface FormDataProps {
+  name: string
+  email: string
+  oldPassword: string
+  newPassword: string
+  confirmNewPassword: string
+}
 
 export function ProfileScreen() {
   const [userPhoto, setUserPhoto] = useState('https://github.com/daviaxs.png')
+
   const toast = useToast()
+  const { user } = useAuth()
+
+  const { control } = useForm<FormDataProps>({
+    defaultValues: {
+      name: user.name,
+      email: user.email
+    }
+  })
 
   async function handleUserPhotoSelected() {
     try {
@@ -79,8 +98,32 @@ export function ProfileScreen() {
           </TouchableOpacity>
 
           <Center w="$full" gap="$4">
-            <Input placeholder="Nome" bg="$gray600" />
-            <Input value="davialves@gmail.com" bg="$gray600" isReadOnly />
+            <Controller
+              control={control}
+              name="name"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  placeholder="Nome"
+                  bg="$gray600"
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="email"
+              render={({ field: { value, onChange } }) => (
+                <Input
+                  bg="$gray600" 
+                  placeholder="E-mail"
+                  onChangeText={onChange}
+                  value={value}
+                  isReadOnly
+                />
+              )}
+            />
           </Center>
 
           <Heading
