@@ -17,7 +17,7 @@ interface FormDataProps {
   email: string
   old_password: string
   password: string
-  confirmPassword: string
+  confirm_password: string
 }
 
 export function ProfileScreen() {
@@ -169,7 +169,7 @@ export function ProfileScreen() {
 
             <Controller
               control={control}
-              name="confirmPassword"
+              name="confirm_password"
               render={({ field: { value, onChange } }) => (
                 <Input
                   placeholder="Confirme a nova senha"
