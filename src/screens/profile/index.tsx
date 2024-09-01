@@ -1,9 +1,8 @@
 import { Button } from "@components/button/Button"
 import { Input } from "@components/input/Input"
 import { ScreenHeader } from "@components/screen-header/ScreenHeader"
-import { UserPhoto } from "@components/user-photo/UserPhoto"
 import { Center, Heading, Text, VStack, useToast } from "@gluestack-ui/themed"
-import { Alert, ScrollView, TouchableOpacity } from "react-native"
+import { ScrollView, TouchableOpacity } from "react-native"
 import * as ImagePicker from "expo-image-picker"
 import * as FileSystem from "expo-file-system"
 import { useState } from "react"
@@ -11,14 +10,22 @@ import { ToastMessage } from "@components/toast-message/ToastMessage"
 import { UserAvatar } from "@components/user-avatar/UserAvatar"
 import { useAuth } from "@hooks/useAuth"
 import { Controller, useForm } from "react-hook-form"
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from "yup"
 
 interface FormDataProps {
   name: string
-  email: string
-  old_password: string
-  password: string
-  confirm_password: string
+  email?: string
+  old_password?: string | undefined | null
+  password?: string | undefined | null
+  confirm_password?: string | undefined | null
 }
+
+const ProfileFormSchema = yup.object({
+  name: yup.string().required('Informe seu nome.'),
+  password: yup.string().min(6, 'A senha deve ter no mínimo 6 caracteres.').nullable().transform(value => !!value ? value : null),
+  confirm_password: yup.string().nullable().transform(value => !!value ? value : null).oneOf([yup.ref('password')], 'As senhas não conferem.')
+})
 
 export function ProfileScreen() {
   const [userPhoto, setUserPhoto] = useState('https://github.com/daviaxs.png')
@@ -26,7 +33,8 @@ export function ProfileScreen() {
   const toast = useToast()
   const { user } = useAuth()
 
-  const { control } = useForm<FormDataProps>({
+  const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
+    resolver: yupResolver(ProfileFormSchema),
     defaultValues: {
       name: user.name,
       email: user.email
@@ -77,6 +85,10 @@ export function ProfileScreen() {
     }
   }
 
+  async function handleProfileUpdate(data: FormDataProps) {
+    console.log(data)
+  }
+
   return (
     <VStack>
       <ScreenHeader title="Perfil" />
@@ -107,6 +119,7 @@ export function ProfileScreen() {
                   bg="$gray600"
                   onChangeText={onChange}
                   value={value}
+                  errorMessage={errors.name?.message}
                 />
               )}
             />
@@ -148,7 +161,8 @@ export function ProfileScreen() {
                   bg="$gray600"
                   secureTextEntry
                   onChangeText={onChange}
-                  value={value}
+                  value={value ?? undefined}
+                  errorMessage={errors.old_password?.message}
                 />
               )}
             />
@@ -162,7 +176,8 @@ export function ProfileScreen() {
                   bg="$gray600"
                   secureTextEntry
                   onChangeText={onChange}
-                  value={value}
+                  value={value ?? undefined}
+                  errorMessage={errors.password?.message}
                 />
               )}
             />
@@ -176,12 +191,16 @@ export function ProfileScreen() {
                   bg="$gray600"
                   secureTextEntry
                   onChangeText={onChange}
-                  value={value}
+                  value={value ?? undefined}
+                  errorMessage={errors.confirm_password?.message}
                 />
               )}
             />
 
-            <Button title="Salvar" />
+            <Button
+              title="Salvar"
+              onPress={handleSubmit(handleProfileUpdate)}
+            />
           </Center>
         </Center>
       </ScrollView>
