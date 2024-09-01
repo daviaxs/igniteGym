@@ -105,9 +105,19 @@ export function ProfileScreen() {
         name: `${user.name}.${fileExtension}`.toLowerCase().replace(' ', '_'),
         uri: photoURI,
         type: `${(photoSelected.assets[0].type)}/${fileExtension}`
-      }
+      } as any
 
-      console.log(photoFile)
+      const userPhotoUploadForm = new FormData()
+
+      userPhotoUploadForm.append('avatar', photoFile)
+
+      await api.patch('/users/avatar', userPhotoUploadForm, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+
+      ToastAlert({ message: 'Foto de perfil atualizada com sucesso!', toast, variant: 'success' })
     } catch (error) {
       console.log(error)
     }
