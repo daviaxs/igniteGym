@@ -12,6 +12,9 @@ import { useAuth } from "@hooks/useAuth"
 import { Controller, useForm } from "react-hook-form"
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from "yup"
+import { api } from "@services/api"
+import { ToastAlert } from "@components/toast-alert/ToastAlert"
+import { appError } from "@utils/appError"
 
 interface FormDataProps {
   name: string
@@ -44,6 +47,7 @@ const ProfileFormSchema = yup.object({
 })
 
 export function ProfileScreen() {
+  const [isUpdating, setIsUpdating] = useState(false)
   const [userPhoto, setUserPhoto] = useState('https://github.com/daviaxs.png')
 
   const toast = useToast()
@@ -102,7 +106,20 @@ export function ProfileScreen() {
   }
 
   async function handleProfileUpdate(data: FormDataProps) {
-    console.log(data)
+    try {
+      setIsUpdating(true)
+
+      await api.put('/users', data)
+
+      ToastAlert({ message: 'Perfil atualizado com sucesso!', toast, variant: 'success' })
+    } catch (error) {
+      const isAppError = error instanceof appError
+      const message = isAppError ? error.message : 'Não foi possível atualizar seu perfil. Tente novamente mais tarde.'
+
+      ToastAlert({ message, toast })
+    } finally {
+      setIsUpdating(false)
+    }
   }
 
   return (
@@ -219,6 +236,7 @@ export function ProfileScreen() {
             <Button
               title="Salvar"
               onPress={handleSubmit(handleProfileUpdate)}
+              isLoading={isUpdating}
             />
           </Center>
         </Center>
