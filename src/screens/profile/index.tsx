@@ -23,8 +23,24 @@ interface FormDataProps {
 
 const ProfileFormSchema = yup.object({
   name: yup.string().required('Informe seu nome.'),
-  password: yup.string().min(6, 'A senha deve ter no mínimo 6 caracteres.').nullable().transform(value => !!value ? value : null),
-  confirm_password: yup.string().nullable().transform(value => !!value ? value : null).oneOf([yup.ref('password')], 'As senhas não conferem.')
+  password: yup
+    .string()
+    .min(6, 'A senha deve ter no mínimo 6 caracteres.')
+    .nullable()
+    .transform(value => !!value ? value : null),
+  confirm_password: yup
+    .string()
+    .nullable()
+    .transform((value) => !!value ? value : null)
+    .oneOf([yup.ref('password'), null], 'A confirmação de senha não confere.')
+    .when('password', {
+      is: (value: string | null) => !!value,
+      then: (schema) => schema
+        .nullable()
+        .required('Informe a confirmação da senha.')
+        .transform(value => !!value ? value : null),
+      otherwise: (schema) => schema.nullable(),
+    }),
 })
 
 export function ProfileScreen() {
@@ -163,6 +179,7 @@ export function ProfileScreen() {
                   onChangeText={onChange}
                   value={value ?? undefined}
                   errorMessage={errors.old_password?.message}
+                  autoCapitalize="none"
                 />
               )}
             />
@@ -178,6 +195,7 @@ export function ProfileScreen() {
                   onChangeText={onChange}
                   value={value ?? undefined}
                   errorMessage={errors.password?.message}
+                  autoCapitalize="none"
                 />
               )}
             />
@@ -193,6 +211,7 @@ export function ProfileScreen() {
                   onChangeText={onChange}
                   value={value ?? undefined}
                   errorMessage={errors.confirm_password?.message}
+                  autoCapitalize="none"
                 />
               )}
             />
