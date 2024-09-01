@@ -8,6 +8,7 @@ import { ToastAlert } from "@components/toast-alert/ToastAlert"
 import { api } from "@services/api"
 import { historyByDayDTO } from "@dtos/historyByDayDTO"
 import { useFocusEffect } from "@react-navigation/native"
+import { Loading } from "@components/loading/Loading"
 
 export function HistoryScreen() {
   const [isLoading, setIsLoading] = useState(true)
@@ -41,27 +42,31 @@ export function HistoryScreen() {
       <ScreenHeader title="Histórico" />
 
 
-      <SectionList
-        sections={exercises}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <HistoryCard data={item} />}
-        renderSectionHeader={({ section }) => (
-          <Heading color="$gray200" fontSize="$md" mt="$10" mb="$3">
-            {section.title}
-          </Heading>
-        )}
-        style={{ paddingHorizontal: 32 }}
-        contentContainerStyle={
-          exercises.length === 0 && { flex: 1, justifyContent: 'center' }
-        }
-        ListEmptyComponent={() => (
-          <Text color="$gray200" textAlign="center">
-            Não há exercícios registrados ainda. {'\n'}
-            Vamos começar?
-          </Text>
-        )}
-        showsVerticalScrollIndicator={false}
-      />
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <SectionList
+          sections={exercises}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <HistoryCard data={item} />}
+          renderSectionHeader={({ section }) => (
+            <Heading color="$gray200" fontSize="$md" mt="$10" mb="$3">
+              {section.title}
+            </Heading>
+          )}
+          style={{ paddingHorizontal: 32 }}
+          contentContainerStyle={
+            exercises.length === 0 && { flex: 1, justifyContent: 'center' }
+          }
+          ListEmptyComponent={() => (
+            <Text color="$gray200" textAlign="center">
+              Não há exercícios registrados ainda. {'\n'}
+              Vamos começar?
+            </Text>
+          )}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
     </VStack>
   )
 }
