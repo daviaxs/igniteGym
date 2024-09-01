@@ -15,6 +15,7 @@ import * as yup from "yup"
 import { api } from "@services/api"
 import { ToastAlert } from "@components/toast-alert/ToastAlert"
 import { appError } from "@utils/appError"
+import { useHandleUserPhotoSelected } from "@hooks/useHandleUserPhotoSelected"
 
 interface FormDataProps {
   name: string
@@ -48,10 +49,10 @@ const ProfileFormSchema = yup.object({
 
 export function ProfileScreen() {
   const [isUpdating, setIsUpdating] = useState(false)
-  const [userPhoto, setUserPhoto] = useState('https://github.com/daviaxs.png')
 
   const toast = useToast()
   const { user, updateUserProfile } = useAuth()
+  const { handleUserPhotoSelected } = useHandleUserPhotoSelected()
 
   const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
     resolver: yupResolver(ProfileFormSchema),
@@ -61,67 +62,6 @@ export function ProfileScreen() {
     }
   })
 
-  async function handleUserPhotoSelected() {
-    try {
-      const photoSelected = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        quality: 1,
-        aspect: [4, 4],
-        allowsEditing: true
-      })
-
-      if (photoSelected.canceled) {
-        return
-      }
-
-      const photoURI = photoSelected.assets[0].uri
-
-      if (!photoURI) {
-        return
-      }
-
-      const photoInfo = (await FileSystem.getInfoAsync(photoURI)) as {
-        size: number
-      }
-
-      if (photoInfo.size && photoInfo.size / 1024 / 1024 > 5) {
-        return toast.show({
-          placement: "top",
-          render: ({ id }) => (
-            <ToastMessage
-              id={id}
-              title="Imagem muito grande!"
-              description="Essa imagem é muito grande. Utilize uma imagem de até 5MB."
-              action="error"
-              onClose={() => toast.close(id)}
-            />
-          )
-        })
-      }
-
-      const fileExtension = photoURI.split('.').pop()
-
-      const photoFile = {
-        name: `${user.name}.${fileExtension}`.toLowerCase().replace(' ', '_'),
-        uri: photoURI,
-        type: `${(photoSelected.assets[0].type)}/${fileExtension}`
-      } as any
-
-      const userPhotoUploadForm = new FormData()
-
-      userPhotoUploadForm.append('avatar', photoFile)
-
-      await api.patch('/users/avatar', userPhotoUploadForm, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-
-      ToastAlert({ message: 'Foto de perfil atualizada com sucesso!', toast, variant: 'success' })
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
   async function handleProfileUpdate(data: FormDataProps) {
     try {
@@ -150,7 +90,7 @@ export function ProfileScreen() {
 
       <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
         <Center mt="$6" px="$10">
-          <UserAvatar h="$32" w="$32" avatar={userPhoto} />
+          <UserAvatar h="$32" w="$32" />
 
           <TouchableOpacity onPress={handleUserPhotoSelected}>
             <Text

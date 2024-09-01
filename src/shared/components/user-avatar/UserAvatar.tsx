@@ -9,15 +9,14 @@ type GluestackImageProps = ComponentProps<typeof Image>
 interface UserAvatarProps {
   h: GluestackImageProps['h']
   w: GluestackImageProps['w']
-  avatar?: string | undefined
 }
 
-export function UserAvatar({ h, w, avatar }: UserAvatarProps) {
+export function UserAvatar({ h, w }: UserAvatarProps) {
   const { user } = useAuth()
 
   return (
     <UserPhoto
-      source={user.avatar ? { uri: user.avatar } : avatar ? { uri: avatar } : DefaultUserAvatar}
+      source={user.avatar ? { uri: user.avatar } : DefaultUserAvatar}
       alt="Imagem do usuário"
       h={h}
       w={w}
