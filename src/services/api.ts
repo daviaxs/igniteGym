@@ -31,7 +31,7 @@ api.registerInterceptTokenManager = signOut => {
           return Promise.reject(requestError)
         }
 
-        const originalRequestConfig = requestError.storageConfig
+        const originalRequestConfig = requestError.config
 
         if (isRefreshing) {
           return new Promise((resolve, reject) => {
