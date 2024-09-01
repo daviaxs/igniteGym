@@ -56,11 +56,15 @@ api.registerInterceptTokenManager = signOut => {
 
             await storageAuthTokenSave({ token: data.token, refresh_token: data.refresh_token })
 
-            if (originalRequestConfig.data) {
+            if (
+              originalRequestConfig.data &&
+              typeof originalRequestConfig.data === 'string' &&
+              originalRequestConfig.headers['Content-Type'] === 'application/json'
+            ) {
               originalRequestConfig.data = JSON.parse(originalRequestConfig.data)
             }
 
-            originalRequestConfig.headers = { 'Authorization': `Bearer ${data.token}` }
+            originalRequestConfig.headers = { ...originalRequestConfig.headers, 'Authorization': `Bearer ${data.token}` }
             api.defaults.headers['Authorization'] = `Bearer ${data.token}`
 
             failedQueue.forEach(request => {
