@@ -24,12 +24,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(userData)
   }
 
-  async function storageUserAndTokenSave(userData: userDTO, token: string) {
+  async function storageUserAndTokenSave(userData: userDTO, token: string, refresh_token: string) {
     try {
       setIsLoadingUserData(true)
 
       await storageUserSave(userData)
-      await storageAuthTokenSave(token)
+      await storageAuthTokenSave({ token, refresh_token })
     } catch (error) {
       throw error
     } finally {
@@ -50,8 +50,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { data } = await api.post('/sessions', { email, password })
 
-      if (data.user && data.token) {
-        await storageUserAndTokenSave(data.user, data.token)
+      if (data.user && data.token && data.refresh_token) {
+        await storageUserAndTokenSave(data.user, data.token, data.refresh_token)
         await userAndTokenUpdate(data.user, data.token)
       }
     } catch (error) {
@@ -64,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoadingUserData(true)
 
       const userLogged = await storageUserGet()
-      const token = await storageAuthTokenGet()
+      const { token } = await storageAuthTokenGet()
 
       if (userLogged && token) {
         await userAndTokenUpdate(userLogged, token)
