@@ -99,7 +99,15 @@ export function ProfileScreen() {
         })
       }
 
-      setUserPhoto(photoURI)
+      const fileExtension = photoURI.split('.').pop()
+
+      const photoFile = {
+        name: `${user.name}.${fileExtension}`.toLowerCase().replace(' ', '_'),
+        uri: photoURI,
+        type: `${(photoSelected.assets[0].type)}/${fileExtension}`
+      }
+
+      console.log(photoFile)
     } catch (error) {
       console.log(error)
     }
