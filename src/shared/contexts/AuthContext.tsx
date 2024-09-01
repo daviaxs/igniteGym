@@ -6,6 +6,7 @@ import { createContext, ReactNode, useEffect, useState } from "react"
 
 interface AuthContextProps {
   user: userDTO
+  updateUserProfile: (userUpdated: userDTO) => Promise<void>
   signIn: (email: string, password: string) => Promise<void>
   signOut: () => Promise<void>
   isLoadingUserData: boolean
@@ -33,6 +34,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw error
     } finally {
       setIsLoadingUserData(false)
+    }
+  }
+
+  async function updateUserProfile(userUpdated: userDTO) {
+    try {
+      setUser(userUpdated)
+      await storageUserSave(userUpdated)
+    } catch (error) {
+      throw error
     }
   }
 
@@ -86,7 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, signIn, isLoadingUserData, signOut }}
+      value={{ user, signIn, updateUserProfile, isLoadingUserData, signOut }}
     >
       {children}
     </AuthContext.Provider >
