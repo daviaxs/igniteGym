@@ -94,6 +94,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loadUserData()
   }, [])
 
+  useEffect(() => {
+    const subscribe = api.registerInterceptTokenManager(signOut)
+
+    return () => {
+      subscribe()
+    }
+  }, [signOut])
+
   return (
     <AuthContext.Provider
       value={{ user, signIn, updateUserProfile, isLoadingUserData, signOut }}
